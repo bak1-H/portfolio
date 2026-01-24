@@ -1,0 +1,17 @@
+{
+  "name": "portafolio",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource/momo-trust-display": "^5.2.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.12",
+    "tailwindcss": "^4.1.18"
+  }
+}
