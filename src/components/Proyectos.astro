@@ -14,11 +14,14 @@
 
       <div class="max-w-sm w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
         <div class="p-6">
-          <img class="rounded-lg w-full h-48 object-cover mb-4" src="https://htmldesdecero.es/wp-content/uploads/2018/12/Importancia-atributo-alt-etiqueta-img-1024x851.png" alt="Proyecto" />
+          <img class="rounded-lg w-full h-48 object-cover mb-4" 
+            src="src/assets/img/proyecto1.png"
+            alt="Proyecto"
+            onclick="openModal(this.src)" />
           <a href="https://github.com/bak1-H/CamionesSPADEMO" target="_blank" rel="noopener noreferrer">
             <h5 class="text-white text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">Proyecto Escolar</h5>
           </a>
-          <p class="text-gray-400 text-sm mb-4">Modelo Simple de gestión de arriendo de camiones. Construido en Java (SpringBoot) con arquitectura de microservicios y MVC. Base de datos en MongoDB Atlas.</p>
+          <p class="text-gray-400 text-sm mb-4">Modelo Simple de gestión de arriendo de camiones. Construido en Java (SpringBoot) con arquitectura de microservicios y MVC Conectada a una Base de datos en la Nube de MongoDB Atlas.</p>
           <a href="https://github.com/bak1-H/CamionesSPADEMO" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 text-sm font-medium">
             Ver Proyecto
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -28,12 +31,16 @@
 
       <div class="max-w-sm w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
         <div class="p-6">
-          <img class="rounded-lg w-full h-48 object-cover mb-4" src="https://htmldesdecero.es/wp-content/uploads/2018/12/Importancia-atributo-alt-etiqueta-img-1024x851.png" alt="Proyecto" />
+          <img class="rounded-lg w-full h-48 object-cover mb-4" 
+          src="src/assets/img/botproyecto.png" 
+          alt="Proyecto" 
+          onclick="openModal(this.src)"/>
           <a href="https://github.com/bak1-H/CamionesSPADEMO" target="_blank" rel="noopener noreferrer">
-            <h5 class="text-white text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">Proyecto Escolar</h5>
+            <h5 class="text-white text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">Bot de DISCORD</h5>
           </a>
-          <p class="text-gray-400 text-sm mb-4">Modelo Simple de gestión de arriendo de camiones. Construido en Java (SpringBoot) con arquitectura de microservicios y MVC. Base de datos en MongoDB Atlas.</p>
-          <a href="https://github.com/bak1-H/CamionesSPADEMO" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 text-sm font-medium">
+          <p class="text-gray-400 text-sm mb-4">Un Bot de discord para reproducir musica de YouTube con otras funciones como !lyrics de <a class="text-blue-600 underline hover:text-blue-800" href="https://genius.com" target="_blank" rel="noopener noreferrer">GENIUS</a> con su API publica y filtros de limpia de titulos para mayor calidad en busquedas, Desplegado en Railway integrando despliegue continuo.</p>
+          
+          <a href="https://github.com/bak1-H/BOT_DISCORD" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 text-sm font-medium">
             Ver Proyecto
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
@@ -43,7 +50,10 @@
 
       <div class="max-w-sm w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
         <div class="p-6">
-          <img class="rounded-lg w-full h-48 object-cover mb-4" src="https://htmldesdecero.es/wp-content/uploads/2018/12/Importancia-atributo-alt-etiqueta-img-1024x851.png" alt="Proyecto" />
+          <img class="rounded-lg w-full h-48 object-cover mb-4" 
+          src="https://htmldesdecero.es/wp-content/uploads/2018/12/Importancia-atributo-alt-etiqueta-img-1024x851.png" 
+          alt="Proyecto"
+          onclick="openModal(this.src)" />
           <a href="https://github.com/bak1-H/CamionesSPADEMO" target="_blank" rel="noopener noreferrer">
             <h5 class="text-white text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">Proyecto Escolar</h5>
           </a>
@@ -56,5 +66,30 @@
       </div>
     </div>
   </div>
+  <!-- Modal Lightbox -->
+<div id="imageModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4" onclick="closeModal()">
+  <button class="absolute top-4 right-4 text-white text-4xl hover:text-blue-400 transition-colors">&times;</button>
+  <img id="modalImage" class="max-w-full max-h-[90vh] rounded-lg" src="" alt="Vista previa" />
+</div>
+
+<script is:inline>
+  function openModal(src) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modalImg.src = src;
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
 </section>
 
