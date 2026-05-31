@@ -11,7 +11,10 @@
   "dependencies": {
     "@fontsource/momo-trust-display": "^5.2.1",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.12",
+    "astro": "^6.4.2",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "gif-encoder-2": "^1.0.5"
   }
 }

@@ -1,15 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Badge from '../components/Badge.astro';
 import Proyectos from '../components/Proyectos.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
+import giphy from '../assets/img/giphy_nobg.gif';
 ---
 
 <Layout title="Portafolio">
-<main>
+
+  <img src={giphy.src} alt="" aria-hidden="true" decoding="async" class="cat-deco" />
+
+  <main class="relative overflow-x-hidden">
     <About/>
     <Proyectos/>
     <Contact/>
-</main>
+  </main>
+
 </Layout>
+
+<style>
+  .cat-deco {
+    position: fixed;
+    bottom: -0.5rem;
+    left: -0.5rem;
+    width: min(180px, 24vw);
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    opacity: 0.07;
+    animation: cat-float 6s ease-in-out infinite;
+  }
+
+  :global(html.light) .cat-deco {
+    opacity: 0.9;
+  }
+
+  @keyframes cat-float {
+    0%,  100% { transform: translateY(0px);   }
+    50%        { transform: translateY(-10px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cat-deco { animation: none; }
+  }
+</style>

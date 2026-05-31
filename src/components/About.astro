@@ -1,53 +1,59 @@
 ---
 import new_foto from '../assets/img/new_foto.png';
+
+const techs = [
+  { name: 'React',       color: '#61dafb' },
+  { name: 'Node.js',     color: '#8cc84b' },
+  { name: 'Tailwind',    color: '#38bdf8' },
+  { name: 'Spring Boot', color: '#3fb950' },
+  { name: 'HTML / CSS',  color: '#f85149' },
+  { name: 'SQL / NoSQL', color: '#54a2ff' },
+  { name: 'Git',         color: '#d29922' },
+  { name: 'Python',      color: '#53fc44' },
+  { name: 'Photoshop',   color: '#5cd9f7' },
+];
 ---
 
-<section id="sobre-mi" class="py-20 px-4 md:px-8">
-  <div class="max-w-[900px] mx-auto">
+<section id="sobre-mi" class="pt-28 pb-16 px-6">
+  <div class="max-w-[820px] mx-auto">
 
-    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center gap-3">
-      <span class="text-blue-500">&#60;</span>
-      Sobre Mí
-      <span class="text-blue-500">/&#62;</span>
-    </h2>
-    <div class="w-20 h-1 bg-blue-500 mb-10 rounded-full"></div>
-
-    <div class="grid md:grid-cols-2 gap-10 items-center">
-
-      <div class="flex justify-center">
-        <div class="relative">
-          <div class="absolute inset-0 bg-blue-500/20 rounded-2xl blur-2xl"></div>
-          <img 
-            src={new_foto.src} 
-            alt="Maximiliano" 
-            class="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl object-cover ring-2 ring-white/20 hover:ring-blue-500/50 transition-all duration-300"
-          />
-        </div>
+    <div class="flex flex-col sm:flex-row gap-6 items-start reveal">
+      <img
+        src={new_foto.src}
+        alt="Foto de perfil de Maximiliano Huerta"
+        decoding="async"
+        class="w-20 h-20 rounded-2xl object-cover ring-1 ring-[var(--c-border-md)] shrink-0"
+      />
+      <div class="flex-1">
+        <h1 class="text-2xl font-semibold tracking-tight text-[var(--c-text)]">bak1-h</h1>
+        <p class="text-[var(--c-accent)] text-sm font-medium mt-0.5">Analista Programador · Desarrollador de Software</p>
+        <p class="text-[var(--c-muted)] text-[15px] leading-relaxed mt-4">
+          Estudiante de Informática con pasión por el desarrollo de software. Me encanta aprender
+          nuevas tecnologías y enfrentar desafíos para crecer como desarrollador. Actualmente busco
+          oportunidades para aplicar mis conocimientos en proyectos reales y ganar experiencia práctica.
+        </p>
       </div>
+    </div>
 
-      <div class="text-gray-300 space-y-4">
-        <p class="text-lg leading-relaxed">
-          ¡Hola! Soy <span class="text-white font-semibold">Maximiliano</span>, estudiante de Informática 
-          de la carrera Analista Programador con pasión por el desarrollo de software.
-        </p>
-        <p class="leading-relaxed">
-          Me encanta aprender nuevas tecnologías y enfrentar desafíos que me permitan crecer como desarrollador. 
-          actualmente, estoy enfocado en busqueda de oportunidades para aplicar mis conocimientos en proyectos reales
-          para conseguir experiencia práctica y nuevas habilidades.
-        </p>
-
-
-        <div class="pt-4">
-          <h3 class="text-white font-semibold mb-3">Tecnologías:</h3>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm hover:bg-blue-500/20 hover:text-white transition-colors">Java</span>
-            <span class="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm hover:bg-blue-500/20 hover:text-white transition-colors">Spring Boot</span>
-            <span class="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm hover:bg-blue-500/20 hover:text-white transition-colors">HTML/CSS</span>
-            <span class="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm hover:bg-blue-500/20 hover:text-white transition-colors">SQL/NoSQL</span>
-            <span class="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm hover:bg-blue-500/20 hover:text-white transition-colors">Git</span>
-          </div>
+    <div class="mt-10 reveal" style="--reveal-delay: 0.05s">
+      <p class="mono text-xs text-[var(--c-faint)] mb-3">
+        <span class="text-[var(--c-accent)]">#</span> tecnologías utilizadas
+      </p>
+      <div class="marquee">
+        <div class="marquee-track">
+          {[0, 1].map((dup) => (
+            <ul class="marquee-group" aria-hidden={dup === 1 ? 'true' : undefined}>
+              {techs.map((t) => (
+                <li class="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--c-surface)] border border-[var(--c-border)] rounded-full text-xs text-[var(--c-chip)] whitespace-nowrap">
+                  <span class="dot" style={`background:${t.color}`}></span>
+                  {t.name}
+                </li>
+              ))}
+            </ul>
+          ))}
         </div>
       </div>
     </div>
+
   </div>
 </section>

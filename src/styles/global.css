@@ -1,1 +1,236 @@
 @import "tailwindcss";
+
+/* ============================================================
+   Tokens — dark (default) / light
+   ============================================================ */
+:root {
+  --c-bg:           #18181b;
+  --c-surface:      #27272a;
+  --c-inset:        #1c1c1f;
+  --c-text:         #fafafa;
+  --c-muted:        #a1a1aa;
+  --c-faint:        #71717a;
+  --c-chip:         #d4d4d8;
+  --c-placeholder:  #52525b;
+  --c-border:       rgba(255, 255, 255, 0.08);
+  --c-border-md:    rgba(255, 255, 255, 0.12);
+  --c-border-hover: rgba(255, 255, 255, 0.22);
+  --c-accent:       #54a2ff;
+  --c-accent-ring:  rgba(84, 162, 255, 0.2);
+  --c-glow:         rgba(84, 162, 255, 0.1);
+  --c-header:       rgba(24, 24, 27, 0.7);
+  --c-btn-bg:       #fafafa;
+  --c-btn-text:     #18181b;
+  --c-dot:          rgba(255, 255, 255, 0.045);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.light {
+  --c-bg:           #fafafa;
+  --c-surface:      #ffffff;
+  --c-inset:        #f4f4f5;
+  --c-text:         #18181b;
+  --c-muted:        #52525b;
+  --c-faint:        #71717a;
+  --c-chip:         #3f3f46;
+  --c-placeholder:  #a1a1aa;
+  --c-border:       rgba(0, 0, 0, 0.08);
+  --c-border-md:    rgba(0, 0, 0, 0.12);
+  --c-border-hover: rgba(0, 0, 0, 0.22);
+  --c-accent:       #2563eb;
+  --c-accent-ring:  rgba(37, 99, 235, 0.15);
+  --c-glow:         rgba(37, 99, 235, 0.07);
+  --c-header:       rgba(250, 250, 250, 0.8);
+  --c-btn-bg:       #18181b;
+  --c-btn-text:     #fafafa;
+  --c-dot:          rgba(0, 0, 0, 0.05);
+}
+
+
+/* ============================================================
+   Base
+   ============================================================ */
+html {
+  font-family: "Lexend", system-ui, -apple-system, sans-serif;
+  color: var(--c-text);
+  background-color: var(--c-bg);
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fondo fijo — glow + dot grid. Capa compuesta una sola vez → sin lag */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--c-bg);
+  background-image:
+    radial-gradient(60% 38% at 50% -6%, var(--c-glow) 0%, transparent 70%),
+    radial-gradient(circle at 1px 1px, var(--c-dot) 1px, transparent 0);
+  background-size: 100% 100%, 28px 28px;
+  background-repeat: no-repeat, repeat;
+}
+
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ============================================================
+   Tarjetas
+   ============================================================ */
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  transition:
+    border-color 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.card-hover:hover {
+  border-color: var(--c-border-hover);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   Punto de color (tecnologías)
+   ============================================================ */
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Chip — usado en JS (stack del modal)
+   ============================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  background: var(--c-inset);
+  border: 1px solid var(--c-border);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--c-chip);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Botones del modal — usados en JS
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--c-btn-bg);
+  color: var(--c-btn-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--c-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 1px solid var(--c-border-md);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover {
+  border-color: var(--c-border-hover);
+  color: var(--c-text);
+}
+
+/* ============================================================
+   Inputs del formulario
+   ============================================================ */
+.field {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: var(--c-inset);
+  border: 1px solid var(--c-border-md);
+  border-radius: 0.75rem;
+  color: var(--c-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: none;
+}
+.field::placeholder { color: var(--c-placeholder); }
+.field:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px var(--c-accent-ring);
+}
+
+/* ============================================================
+   Marquee
+   ============================================================ */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   Scroll reveal
+   ============================================================ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   Accesibilidad
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .marquee-track { animation: none; }
+  html.theme-tx * { transition: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

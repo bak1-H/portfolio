@@ -1,71 +1,167 @@
-<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/40 border-b border-white/10 flex items-center">
-  <nav class="max-w-[1200px] mx-auto px-4 md:px-8 py-4 ">
-    <div class="flex">
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--c-header)] border-b border-[var(--c-border)]">
+  <nav class="max-w-[820px] mx-auto px-6 py-3.5 flex items-center justify-between">
 
+    <a href="#sobre-mi" class="font-semibold tracking-tight text-[var(--c-text)] hover:text-[var(--c-accent)] transition-colors">
+      (❁´◡`❁)<span class="text-[var(--c-accent)]">.</span>
+    </a>
 
-      <ul class="hidden md:flex items-center gap-8">
-        <li>
-          <a href="#sobre-mi" class="text-gray-300 hover:text-white relative py-2 transition-colors duration-300 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-500 hover:after:w-full after:transition-all after:duration-300">
-            Sobre Mí
-          </a>
-        </li>
-        <li>
-          <a href="#proyectos" class="text-gray-300 hover:text-white relative py-2 transition-colors duration-300 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-500 hover:after:w-full after:transition-all after:duration-300">
-            Proyectos
-          </a>
-        </li>
-        <li>
-          <a href="#contacto" class="text-gray-300 hover:text-white relative py-2 transition-colors duration-300 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-500 hover:after:w-full after:transition-all after:duration-300">
-            Contacto
-          </a>
-        </li>
-      </ul>
+    <ul class="hidden md:flex items-center gap-6 text-sm">
+      <li><a href="#sobre-mi"  class="text-[var(--c-muted)] hover:text-[var(--c-text)] transition-colors">Sobre mí</a></li>
+      <li><a href="#proyectos" class="text-[var(--c-muted)] hover:text-[var(--c-text)] transition-colors">Proyectos</a></li>
+      <li><a href="#contacto"  class="text-[var(--c-muted)] hover:text-[var(--c-text)] transition-colors">Contacto</a></li>
+    </ul>
 
+    <div class="flex items-center gap-1">
+      <!-- Botón de tema -->
+      <button id="theme-toggle" aria-label="Cambiar tema"
+        class="p-2 rounded-lg text-[var(--c-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-inset)] transition-colors">
+        <!-- Sol: visible en modo oscuro -->
+        <svg id="icon-sun" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="2"  x2="12" y2="4"/>
+          <line x1="12" y1="20" x2="12" y2="22"/>
+          <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="2"  y1="12" x2="4"  y2="12"/>
+          <line x1="20" y1="12" x2="22" y2="12"/>
+          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+        </svg>
+        <!-- Luna: visible en modo claro -->
+        <svg id="icon-moon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
 
-      <button id="menu-btn" class="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      <!-- Hamburger (mobile) -->
+      <button id="menu-btn" class="md:hidden p-2 rounded-lg text-[var(--c-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-inset)] transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
     </div>
-
-
-
-    <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-white/10 pt-4">
-      <ul class="flex flex-col gap-4">
-        <li>
-          <a href="#sobre-mi" class="text-gray-300 hover:text-white block py-2 px-3 rounded-lg hover:bg-white/10 transition-all">
-            Sobre Mí
-          </a>
-        </li>
-        <li>
-          <a href="#proyectos" class="text-gray-300 hover:text-white block py-2 px-3 rounded-lg hover:bg-white/10 transition-all">
-            Proyectos
-          </a>
-        </li>
-        <li>
-          <a href="#contacto" class="text-gray-300 hover:text-white block py-2 px-3 rounded-lg hover:bg-white/10 transition-all">
-            Contacto
-          </a>
-        </li>
-      </ul>
-    </div>
   </nav>
+
+  <div id="mobile-menu" class="md:hidden hidden bg-[var(--c-bg)] border-t border-[var(--c-border)] px-6 pb-4 pt-3">
+    <ul class="flex flex-col gap-1 text-sm">
+      <li><a href="#sobre-mi"  class="text-[var(--c-muted)] hover:text-[var(--c-text)] block py-2 transition-colors">Sobre mí</a></li>
+      <li><a href="#proyectos" class="text-[var(--c-muted)] hover:text-[var(--c-text)] block py-2 transition-colors">Proyectos</a></li>
+      <li><a href="#contacto"  class="text-[var(--c-muted)] hover:text-[var(--c-text)] block py-2 transition-colors">Contacto</a></li>
+    </ul>
+  </div>
 </header>
 
 <script>
-  const menuBtn = document.getElementById('menu-btn');
+  // Mobile menu
+  const menuBtn    = document.getElementById('menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
-  
-  menuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
-  });
+  menuBtn?.addEventListener('click', () => mobileMenu?.classList.toggle('hidden'));
+  mobileMenu?.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => mobileMenu?.classList.add('hidden'))
+  );
 
+  // Theme toggle — cortina descendente (translateY, GPU puro)
+  const toggleBtn = document.getElementById('theme-toggle');
+  const iconSun   = document.getElementById('icon-sun');
+  const iconMoon  = document.getElementById('icon-moon');
 
-  
-  mobileMenu?.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu?.classList.add('hidden');
+  function syncIcons(isLight: boolean) {
+    iconSun?.classList.toggle('hidden', isLight);
+    iconMoon?.classList.toggle('hidden', !isLight);
+  }
+
+  syncIcons(document.documentElement.classList.contains('light'));
+
+  let busy = false;
+
+  toggleBtn?.addEventListener('click', () => {
+    if (busy) return;
+    busy = true;
+
+    const html        = document.documentElement;
+    const willBeLight = !html.classList.contains('light');
+
+    // Sin animación si el usuario prefiere movimiento reducido
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      html.classList.toggle('light', willBeLight);
+      localStorage.setItem('theme', willBeLight ? 'light' : 'dark');
+      syncIcons(willBeLight);
+      busy = false;
+      return;
+    }
+
+    // Crear cortina con el color del NUEVO tema
+    const newBg = willBeLight ? '#fafafa' : '#18181b';
+
+    // rgba0 evita el tinte gris que produce `transparent` al interpolar
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(newBg.slice(i, i + 2), 16));
+    const newBg0 = `rgba(${r},${g},${b},0)`;
+
+    // ─── Cortina 200vh ───────────────────────────────────────────────────────
+    // Baja (→ claro):  gradiente en la punta inferior  →  entra de arriba
+    //   sólido parte superior, degradado parte inferior
+    //   start: translateY(-100%) = -200vh (sobre pantalla)
+    //   cubre: translateY(0)     → sólido = 0-100vh (pantalla entera) → cambia tema
+    //   sale:  translateY(50%)   = +100vh (bajo pantalla)
+    //
+    // Sube (→ oscuro): gradiente en la punta superior  →  entra de abajo
+    //   degradado parte superior, sólido parte inferior
+    //   start: translateY(50%)   = +100vh (bajo pantalla)
+    //   cubre: translateY(-50%)  → sólido = 0-100vh (pantalla entera) → cambia tema
+    //   sale:  translateY(-100%) = -200vh (sobre pantalla)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    const goingDown = willBeLight;
+
+    // Degradado en AMBOS extremos:
+    //   transparent → newBg (15%) → newBg (85%) → transparent
+    //   Sólido central = 70% de 200vh = 140vh > 100vh → cubre la pantalla entera
+    //   Cada extremo = 30vh de fundido suave (visible al entrar Y al salir)
+    //
+    // Posición donde el sólido cubre exactamente la pantalla (0-100vh):
+    //   Baja (goingDown): sólido top (15% = 30vh desde element top) en y=0
+    //                     → element top = -30vh → translateY(-15%)
+    //   Sube (!goingDown): sólido bottom (85% = 170vh desde element top) en y=100vh
+    //                      → element top = -70vh → translateY(-35%)
+
+    const curtain = document.createElement('div');
+    Object.assign(curtain.style, {
+      position:      'fixed',
+      top:           '0',
+      left:          '0',
+      right:         '0',
+      height:        '200vh',
+      zIndex:        '9999',
+      background:    `linear-gradient(to bottom, ${newBg0} 0%, ${newBg} 15%, ${newBg} 85%, ${newBg0} 100%)`,
+      transform:     goingDown ? 'translateY(-100%)' : 'translateY(50%)',
+      pointerEvents: 'none',
+      willChange:    'transform',
     });
+    document.body.appendChild(curtain);
+
+    curtain.getBoundingClientRect();
+
+    const EASE  = 'cubic-bezier(0.45, 0, 0.15, 1)';
+    const cover = goingDown ? 'translateY(-15%)' : 'translateY(-35%)';
+    const exit  = goingDown ? 'translateY(50%)'  : 'translateY(-100%)';
+
+    curtain.style.transition = `transform 520ms ${EASE}`;
+    curtain.style.transform  = cover;
+
+    setTimeout(() => {
+      html.classList.toggle('light', willBeLight);
+      localStorage.setItem('theme', willBeLight ? 'light' : 'dark');
+      syncIcons(willBeLight);
+
+      curtain.style.transition = `transform 280ms ${EASE}`;
+      curtain.style.transform  = exit;
+
+      setTimeout(() => {
+        curtain.remove();
+        busy = false;
+      }, 300);
+    }, 520);
   });
 </script>
