@@ -2,8 +2,19 @@
 import proyecto1 from '../assets/img/proyecto1.png';
 import botproyecto from '../assets/img/botproyecto.png';
 import zenly1 from '../assets/img/image.png';
+import activos from '../assets/img/activos.jpg';
 
 const proyectos = [
+  {
+    title: 'Control de Activos',
+    tech: 'React · NestJS · PostgreSQL',
+    dot: '#38bdf8',
+    image: activos.src,
+    video: '/videos/control-activos.mp4',
+    desc: 'Plataforma web para saber dónde está cada equipo de una operación, quién lo tiene y en qué estado. Incluye asignación con escaneo, traslados entre bodegas, recuento cíclico, alertas por Teams y nueve roles con permisos. Desarrollado en mi práctica profesional; por eso no tiene repositorio ni despliegue públicos.',
+    stack: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'TypeORM', 'BFF'],
+    links: [],
+  },
   {
     title: 'Zenly',
     tech: 'React 19 · TypeScript · Supabase',
@@ -60,6 +71,7 @@ const proyectos = [
           data-tech={p.tech}
           data-dot={p.dot}
           data-image={p.image}
+          data-video={p.video}
           data-desc={p.desc}
           data-stack={p.stack.join(',')}
           data-links={JSON.stringify(p.links)}
@@ -95,6 +107,7 @@ const proyectos = [
     <div id="pmContent" class="w-full max-w-lg max-h-[88vh] overflow-y-auto bg-[var(--c-surface)] border border-[var(--c-border-md)] rounded-2xl shadow-2xl">
       <div class="relative">
         <img id="pmImage" class="w-full h-56 object-cover" src="" alt="" />
+        <video id="pmVideo" class="hidden w-full h-56 object-contain bg-black" controls preload="none" playsinline></video>
         <button id="pmClose" aria-label="Cerrar" class="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-lg p-1.5 text-white/80 hover:text-white transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
@@ -116,6 +129,7 @@ const proyectos = [
     (() => {
       const modal = document.getElementById('projectModal');
       const img = document.getElementById('pmImage');
+      const video = document.getElementById('pmVideo');
       const dot = document.getElementById('pmDot');
       const tech = document.getElementById('pmTech');
       const title = document.getElementById('pmTitle');
@@ -133,6 +147,15 @@ const proyectos = [
         img.src = d.image;
         img.alt = d.title;
         img.style.objectPosition = d.title === 'Zenly' ? 'top' : 'center';
+        if (d.video) {
+          video.src = d.video;
+          video.poster = d.image;
+          video.classList.remove('hidden');
+          img.classList.add('hidden');
+        } else {
+          video.classList.add('hidden');
+          img.classList.remove('hidden');
+        }
         dot.style.background = d.dot;
         tech.textContent = d.tech;
         title.textContent = d.title;
@@ -160,6 +183,9 @@ const proyectos = [
       }
 
       function close() {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         document.body.style.overflow = '';
