@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
 
@@ -8,38 +9,35 @@ import '../styles/global.css';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portafolio de Maximiliano Huerta"/>
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Portafolio de Maximiliano Huerta" />
     <title>Portafolio Maximiliano Huerta</title>
-    <!-- Anti-FOUC: aplica tema guardado ANTES de pintar la página -->
     <script is:inline>
-      (function () {
-        if (localStorage.getItem('theme') === 'light')
-          document.documentElement.classList.add('light');
-        document.documentElement.classList.add('js');
-      })();
+      document.documentElement.classList.add('js');
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <body>
-    <Header/>
+    <Header />
     <slot />
+    <Footer />
 
     <script>
-      const els = document.querySelectorAll('.reveal');
-      if (!('IntersectionObserver' in window) || !els.length) {
-        els.forEach((el) => el.classList.add('is-visible'));
+      const targets = document.querySelectorAll('[data-reveal]');
+
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach((target) => target.classList.add('is-in'));
       } else {
-        const io = new IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              io.unobserve(entry.target);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-in');
+              observer.unobserve(entry.target);
             }
-          }
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-        els.forEach((el) => io.observe(el));
+          },
+          { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+        );
+        targets.forEach((target) => observer.observe(target));
       }
     </script>
   </body>

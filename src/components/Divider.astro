@@ -1,0 +1,35 @@
+---
+import { Picture } from 'astro:assets';
+import Words from './Words.astro';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  statement: string;
+}
+
+const { image, alt, statement } = Astro.props;
+---
+
+<div class="divider">
+  <div class="divider-frame">
+    <Picture
+      src={image}
+      formats={['avif', 'webp']}
+      fallbackFormat="webp"
+      widths={[640, 1024, 1536]}
+      sizes="100vw"
+      alt={alt}
+      class="divider-image"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="divider-content">
+    <div class="wrap">
+      <div class="divider-card" data-reveal="words">
+        <p class="title"><Words text={statement} /></p>
+      </div>
+    </div>
+  </div>
+</div>

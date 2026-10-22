@@ -1,0 +1,10 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const words = text.split(' ');
+---
+
+<span class="words"><span class="sr-only-text">{text}</span>{words.map((word, index) => (<><span class="w" aria-hidden="true"><span style={`--i:${index}`}>{word}</span></span>{index < words.length - 1 ? ' ' : ''}</>))}</span>

@@ -1,14 +1,18 @@
 ---
+import { Picture, getImage } from 'astro:assets';
+import Arrow from './Arrow.astro';
+import Words from './Words.astro';
 import botproyecto from '../assets/img/botproyecto.png';
-import zenly1 from '../assets/img/image.png';
+import zenly from '../assets/img/image.png';
 import activos from '../assets/img/activos.jpg';
+import dannytortas from '../assets/img/dannytortas.jpg';
 
-const proyectos = [
+const projectData = [
   {
     title: 'Control de Activos',
     tech: 'React · NestJS · PostgreSQL',
-    dot: '#38bdf8',
-    image: activos.src,
+    image: activos,
+    position: 'center',
     video: '/videos/control-activos.mp4',
     desc: 'Plataforma web para saber dónde está cada equipo de una operación, quién lo tiene y en qué estado. Incluye asignación con escaneo, traslados entre bodegas, recuento cíclico, alertas por Teams y nueve roles con permisos. Desarrollado en mi práctica profesional; por eso no tiene repositorio ni despliegue públicos.',
     stack: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'TypeORM', 'BFF'],
@@ -17,8 +21,8 @@ const proyectos = [
   {
     title: 'Zenly',
     tech: 'React 19 · TypeScript · Supabase',
-    dot: '#f59e0b',
-    image: zenly1.src,
+    image: zenly,
+    position: 'top',
     desc: 'PWA para que profesionales independientes —peluqueros, tatuadores, psicólogos, entrenadores— gestionen su agenda de turnos y clientes desde el celular o la web, sin instalar nada. Autenticación sin contraseñas con magic links, calendario mensual, navegación por días, gestión de clientes con autocomplete, estados de turno y detección de conflictos de horario. Datos protegidos con Row Level Security en Supabase.',
     stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind v4', 'Supabase', 'PostgreSQL', 'PWA', 'Vercel'],
     links: [
@@ -27,10 +31,20 @@ const proyectos = [
     ],
   },
   {
+    title: 'Danny Tortas',
+    tech: 'Astro 5 · Tailwind CSS',
+    image: dannytortas,
+    position: 'top',
+    video: '/videos/danny-tortas.mp4',
+    desc: 'Landing page para una pastelería artesanal, con catálogo de especialidades y pedidos directos por WhatsApp.',
+    stack: ['Astro 5', 'Tailwind CSS'],
+    links: [{ label: 'Ver sitio', url: 'https://dannytortas.cl', type: 'demo' }],
+  },
+  {
     title: 'Bot de Discord',
     tech: 'Python · Railway · APIs',
-    dot: '#3fb950',
-    image: botproyecto.src,
+    image: botproyecto,
+    position: 'center',
     desc: 'Bot de Discord para reproducir música de YouTube, con integración a la API pública de GENIUS para letras (!lyrics), filtros de limpieza de títulos para mejorar las búsquedas y despliegue continuo en Railway.',
     stack: ['Python', 'Railway', 'GENIUS API', 'YouTube', 'CI/CD'],
     links: [
@@ -38,77 +52,91 @@ const proyectos = [
     ],
   },
 ];
+
+const proyectos = await Promise.all(
+  projectData.map(async (project) => {
+    const modalWidth = Math.min(960, project.image.width);
+    const modalImage = await getImage({ src: project.image, format: 'webp', width: modalWidth });
+    const widths = [...new Set([480, 720, 960].map((width) => Math.min(width, project.image.width)))];
+    return { ...project, modalSrc: modalImage.src, widths };
+  })
+);
 ---
 
-<section id="proyectos" class="py-16 px-6">
-  <div class="max-w-[820px] mx-auto">
-
-    <div class="flex items-baseline justify-between mb-6 reveal">
-      <h2 class="text-2xl font-bold tracking-tight text-[var(--c-text)]">Proyectos</h2>
-      <span class="mono text-xs text-[var(--c-faint)] px-2 py-0.5 bg-[var(--c-surface)] border border-[var(--c-border)] rounded-full">featured</span>
+<section id="proyectos" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="display" data-reveal="words"><Words text="Proyectos en los que he trabajado" /></h2>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="projects-grid">
       {proyectos.map((p, i) => (
-        <div
-          data-project
-          role="button"
-          tabindex="0"
-          aria-label={`Ver detalle de ${p.title}`}
-          data-title={p.title}
-          data-tech={p.tech}
-          data-dot={p.dot}
-          data-image={p.image}
-          data-video={p.video}
-          data-desc={p.desc}
-          data-stack={p.stack.join(',')}
-          data-links={JSON.stringify(p.links)}
-          class="card card-hover overflow-hidden cursor-pointer group reveal"
-          style={`--reveal-delay: ${0.05 + i * 0.07}s`}
-        >
-          <div class="overflow-hidden border-b border-[var(--c-border)] relative">
-            <img
-              class={`w-full h-28 object-cover opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-500 ${p.title === 'Zenly' ? 'object-top' : 'object-center'}`}
-              src={p.image}
-              alt={p.title}
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 backdrop-blur-sm rounded-md p-1">
-              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        <div class="project-slot" data-reveal="block" style={`--reveal-delay: ${(i % 2) * 0.12}s`}>
+          <article
+            data-project
+            data-title={p.title}
+            data-tech={p.tech}
+            data-image={p.modalSrc}
+            data-position={p.position}
+            data-video={p.video}
+            data-desc={p.desc}
+            data-stack={p.stack.join(',')}
+            data-links={JSON.stringify(p.links)}
+            class="project-card"
+          >
+            <div class="project-media" style={`--image-position: ${p.position}`}>
+              {p.video ? (
+                <video
+                  class="project-preview"
+                  data-preview
+                  src={p.video}
+                  poster={p.modalSrc}
+                  aria-label={`Demo de ${p.title}`}
+                  controls
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                ></video>
+              ) : (
+                <Picture
+                  src={p.image}
+                  formats={['avif', 'webp']}
+                  fallbackFormat="webp"
+                  widths={p.widths}
+                  sizes="(min-width: 1200px) 568px, (min-width: 720px) 45vw, 100vw"
+                  alt={`Vista previa de ${p.title}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
             </div>
-          </div>
-          <div class="p-3.5">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="dot" style={`background:${p.dot}`}></span>
-              <span class="mono text-[var(--c-faint)] truncate" style="font-size:10px">{p.tech}</span>
+            <div class="project-body">
+              <p class="project-tech">{p.tech}</p>
+              <h3 class="project-title">{p.title}</h3>
+              <button type="button" class="text-link" data-open aria-label={`Ver detalle de ${p.title}`}>Ver detalle<Arrow /></button>
             </div>
-            <h3 class="text-sm font-semibold text-[var(--c-text)] group-hover:text-[var(--c-accent)] transition-colors">{p.title}</h3>
-          </div>
+          </article>
         </div>
       ))}
     </div>
   </div>
 
-  <!-- Modal de detalle -->
-  <div id="projectModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div id="pmContent" class="w-full max-w-lg max-h-[88vh] overflow-y-auto bg-[var(--c-surface)] border border-[var(--c-border-md)] rounded-2xl shadow-2xl">
-      <div class="relative">
-        <img id="pmImage" class="w-full h-56 object-cover" src="" alt="" />
-        <video id="pmVideo" class="hidden w-full h-56 object-contain bg-black" controls preload="none" playsinline></video>
-        <button id="pmClose" aria-label="Cerrar" class="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-lg p-1.5 text-white/80 hover:text-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+  <div id="projectModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <div id="pmContent" class="modal-panel">
+      <div class="modal-media">
+        <img id="pmImage" src="" alt="" />
+        <video id="pmVideo" hidden controls preload="none" playsinline></video>
+        <button id="pmClose" class="modal-close" type="button" aria-label="Cerrar">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="p-6">
-        <div class="flex items-center gap-2 mb-2">
-          <span id="pmDot" class="dot"></span>
-          <span id="pmTech" class="mono text-xs text-[var(--c-faint)]"></span>
-        </div>
-        <h3 id="pmTitle" class="text-xl font-semibold text-[var(--c-text)] mb-3"></h3>
-        <p id="pmDesc" class="text-[var(--c-muted)] text-sm leading-relaxed mb-5"></p>
-        <div id="pmStack" class="flex flex-wrap gap-1.5 mb-6"></div>
-        <div id="pmLinks" class="flex flex-wrap gap-2"></div>
+      <div class="modal-body">
+        <p id="pmTech" class="project-tech"></p>
+        <h3 id="pmTitle" class="modal-title"></h3>
+        <p id="pmDesc" class="modal-desc"></p>
+        <div id="pmStack" class="modal-stack"></div>
+        <div id="pmLinks" class="modal-links"></div>
       </div>
     </div>
   </div>
@@ -118,33 +146,62 @@ const proyectos = [
       const modal = document.getElementById('projectModal');
       const img = document.getElementById('pmImage');
       const video = document.getElementById('pmVideo');
-      const dot = document.getElementById('pmDot');
       const tech = document.getElementById('pmTech');
       const title = document.getElementById('pmTitle');
       const desc = document.getElementById('pmDesc');
       const stack = document.getElementById('pmStack');
       const links = document.getElementById('pmLinks');
+      const panel = document.getElementById('pmContent');
+      const IOS_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
+      let lastTrigger = null;
+      let sourceCard = null;
+      let isClosing = false;
+      let modalGeneration = 0;
 
-      const ICONS = {
-        github: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>',
-        demo: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>',
-      };
+      document.body.appendChild(modal);
+
+      function setBackgroundInert(isInert) {
+        [...document.body.children].forEach((node) => {
+          if (node !== modal) node.inert = isInert;
+        });
+      }
+
+      function transformFromCard(card) {
+        const from = card.getBoundingClientRect();
+        const to = panel.getBoundingClientRect();
+        const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+        const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+        const scale = Math.min(from.width / to.width, from.height / to.height);
+        return `translate(${dx}px, ${dy}px) scale(${scale})`;
+      }
+
+      function animateModal(card, direction) {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const duration = direction === 'open' ? 520 : 380;
+        const panelFrames = prefersReducedMotion
+          ? [{ opacity: 0 }, { opacity: 1 }]
+          : [{ transform: transformFromCard(card), opacity: 0.4 }, { transform: 'none', opacity: 1 }];
+        const options = { duration, easing: IOS_EASING, direction: direction === 'open' ? 'normal' : 'reverse', fill: 'both' };
+        modal.animate([{ opacity: 0 }, { opacity: 1 }], options);
+        return panel.animate(panelFrames, options).finished;
+      }
+
+      const ARROW = '<span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
+      const GITHUB = '<svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>';
 
       function open(el) {
         const d = el.dataset;
+        lastTrigger = el.querySelector('[data-open]');
+        document.querySelectorAll('[data-preview]').forEach((preview) => preview.pause());
         img.src = d.image;
         img.alt = d.title;
-        img.style.objectPosition = d.title === 'Zenly' ? 'top' : 'center';
+        img.style.objectPosition = d.position;
         if (d.video) {
           video.src = d.video;
           video.poster = d.image;
-          video.classList.remove('hidden');
-          img.classList.add('hidden');
-        } else {
-          video.classList.add('hidden');
-          img.classList.remove('hidden');
         }
-        dot.style.background = d.dot;
+        video.hidden = !d.video;
+        img.hidden = Boolean(d.video);
         tech.textContent = d.tech;
         title.textContent = d.title;
         desc.textContent = d.desc;
@@ -161,30 +218,72 @@ const proyectos = [
           a.href = lnk.url;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
-          a.innerHTML = lnk.label + (ICONS[lnk.type] || ICONS.demo);
-          a.className = idx === 0 ? 'btn-primary' : 'btn-outline';
+          a.className = idx === 0 ? 'btn btn-cta' : 'btn btn-ghost';
+          a.innerHTML = lnk.type === 'github' ? GITHUB + lnk.label : lnk.label + ARROW;
           links.appendChild(a);
         });
+        sourceCard = el;
+        isClosing = false;
+        modalGeneration += 1;
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
+        setBackgroundInert(true);
+        animateModal(el, 'open');
+        document.getElementById('pmClose').focus({ preventScroll: true });
       }
 
-      function close() {
+      async function close() {
+        if (isClosing || modal.classList.contains('hidden')) return;
+        isClosing = true;
+        const closingGeneration = modalGeneration;
         video.pause();
+        await animateModal(sourceCard, 'close').catch(() => {});
+        if (closingGeneration !== modalGeneration) return;
+        setBackgroundInert(false);
         video.removeAttribute('src');
         video.load();
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        modal.getAnimations().forEach((animation) => animation.cancel());
+        panel.getAnimations().forEach((animation) => animation.cancel());
         document.body.style.overflow = '';
+        isClosing = false;
+        if (lastTrigger) lastTrigger.focus({ preventScroll: true });
       }
 
       document.querySelectorAll('[data-project]').forEach((el) => {
-        el.addEventListener('click', () => open(el));
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(el); }
+        el.addEventListener('click', (e) => {
+          if (!e.target.closest('[data-preview]')) open(el);
         });
       });
+
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const saveData = Boolean(navigator.connection?.saveData);
+      const previewObserver = 'IntersectionObserver' in window
+        ? new IntersectionObserver((entries) => {
+            entries.forEach(({ target, isIntersecting }) => {
+              if (!isIntersecting) target.pause();
+              else if (!reducedMotion && !saveData && !target.dataset.userControlled) target.play().catch(() => {});
+            });
+          }, { threshold: 0.5 })
+        : null;
+      document.querySelectorAll('[data-preview]').forEach((preview) => {
+        preview.addEventListener('click', () => { preview.dataset.userControlled = 'true'; });
+        preview.addEventListener('keydown', () => { preview.dataset.userControlled = 'true'; });
+        previewObserver?.observe(preview);
+      });
+
+      const glowEnabled = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (glowEnabled) {
+        document.querySelectorAll('[data-project]').forEach((card) => {
+          card.addEventListener('pointermove', (e) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--glow-x', `${e.clientX - rect.left}px`);
+            card.style.setProperty('--glow-y', `${e.clientY - rect.top}px`);
+          });
+        });
+      }
 
       document.getElementById('pmClose').addEventListener('click', close);
       modal.addEventListener('click', (e) => { if (e.target === modal) close(); });

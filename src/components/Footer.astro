@@ -1,0 +1,21 @@
+---
+import Words from './Words.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="display footer-statement" data-reveal="words">
+      <Words text="Gracias por pasar. Si algo de esto te sirve, escríbeme." />
+    </p>
+    <div class="footer-bar">
+      <span>© {year} Maximiliano Huerta</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/bak1-H" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/maximiliano-huerta-gonzalez-b488922b3/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="#sobre-mi">Volver arriba</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
