@@ -276,6 +276,14 @@ const proyectos = await Promise.all(
         previewObserver?.observe(preview);
       });
 
+      function keepSingleAudio(e) {
+        const active = e.target;
+        if (!(active instanceof HTMLVideoElement) || active.muted) return;
+        document.querySelectorAll('video').forEach((other) => { if (other !== active) other.muted = true; });
+      }
+      document.addEventListener('volumechange', keepSingleAudio, true);
+      document.addEventListener('play', keepSingleAudio, true);
+
       const glowEnabled = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       if (glowEnabled) {
         document.querySelectorAll('[data-project]').forEach((card) => {
