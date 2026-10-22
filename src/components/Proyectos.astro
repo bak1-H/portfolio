@@ -193,6 +193,7 @@ const proyectos = await Promise.all(
       function open(el) {
         const d = el.dataset;
         lastTrigger = el.querySelector('[data-open]');
+        (window as any).goatcounter?.count?.({ path: `proyecto/${d.title}`, title: d.title, event: true });
         document.querySelectorAll('[data-preview]').forEach((preview) => preview.pause());
         img.src = d.image;
         img.alt = d.title;

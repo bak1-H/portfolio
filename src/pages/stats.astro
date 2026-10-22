@@ -1,0 +1,219 @@
+---
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Visitas del portafolio</title>
+  </head>
+  <body>
+    <main class="wrap stats">
+      <h1 class="title">Visitas</h1>
+
+      <form id="login" class="stats-login" hidden>
+        <label for="key">Clave de acceso</label>
+        <input id="key" type="password" autocomplete="current-password" required />
+        <button class="btn btn-cta" type="submit">Entrar</button>
+        <p id="login-error" class="stats-error" role="alert"></p>
+      </form>
+
+      <section id="dashboard" hidden>
+        <p class="stats-total"><strong id="total">0</strong> visitantes en los últimos <span id="days">30</span> días</p>
+        <div id="chart" class="stats-chart" role="img"></div>
+        <div class="stats-grid">
+          <div><h2>Proyectos abiertos</h2><ol id="projects"></ol></div>
+          <div><h2>De dónde llegaron</h2><ol id="referrers"></ol></div>
+          <div><h2>Países</h2><ol id="countries"></ol></div>
+        </div>
+        <button id="logout" class="text-link" type="button">Cerrar sesión</button>
+      </section>
+    </main>
+
+    <script>
+      const STORAGE_KEY = 'stats-key';
+      const login = document.getElementById('login') as HTMLFormElement;
+      const keyInput = document.getElementById('key') as HTMLInputElement;
+      const loginError = document.getElementById('login-error')!;
+      const dashboard = document.getElementById('dashboard')!;
+
+      function readKey() {
+        try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
+      }
+
+      function writeKey(key: string | null) {
+        try {
+          if (key) localStorage.setItem(STORAGE_KEY, key);
+          else localStorage.removeItem(STORAGE_KEY);
+        } catch {}
+      }
+
+      function renderList(id: string, items: { name: string; count: number }[]) {
+        const list = document.getElementById(id)!;
+        list.replaceChildren();
+        if (!items.length) {
+          list.innerHTML = '<li class="stats-empty">Sin datos todavía</li>';
+          return;
+        }
+        for (const { name, count } of items) {
+          const li = document.createElement('li');
+          const label = document.createElement('span');
+          label.textContent = name;
+          const value = document.createElement('strong');
+          value.textContent = String(count);
+          li.append(label, value);
+          list.append(li);
+        }
+      }
+
+      function renderChart(daily: { day: string; count: number }[]) {
+        const chart = document.getElementById('chart')!;
+        const max = Math.max(1, ...daily.map((d) => d.count));
+        chart.setAttribute('aria-label', `Visitantes por día: ${daily.map((d) => `${d.day} ${d.count}`).join(', ')}`);
+        chart.replaceChildren(
+          ...daily.map(({ day, count }) => {
+            const bar = document.createElement('span');
+            bar.style.height = `${(count / max) * 100}%`;
+            bar.title = `${day}: ${count}`;
+            return bar;
+          })
+        );
+      }
+
+      async function load(key: string) {
+        const res = await fetch('/api/stats', { headers: { 'x-stats-key': key } });
+        if (res.status === 401) {
+          writeKey(null);
+          login.hidden = false;
+          dashboard.hidden = true;
+          loginError.textContent = 'Clave incorrecta.';
+          return;
+        }
+        const data = await res.json();
+        if (!res.ok) {
+          loginError.textContent = data.error ?? 'No se pudieron cargar las estadísticas.';
+          login.hidden = false;
+          return;
+        }
+        writeKey(key);
+        login.hidden = true;
+        dashboard.hidden = false;
+        document.getElementById('total')!.textContent = String(data.total);
+        document.getElementById('days')!.textContent = String(data.days);
+        renderChart(data.daily);
+        renderList('projects', data.projects);
+        renderList('referrers', data.referrers);
+        renderList('countries', data.countries);
+      }
+
+      login.addEventListener('submit', (event) => {
+        event.preventDefault();
+        loginError.textContent = '';
+        load(keyInput.value);
+      });
+
+      document.getElementById('logout')!.addEventListener('click', () => {
+        writeKey(null);
+        dashboard.hidden = true;
+        login.hidden = false;
+      });
+
+      const saved = readKey();
+      if (saved) load(saved);
+      else login.hidden = false;
+    </script>
+  </body>
+</html>
+
+<style>
+  .stats {
+    padding-block: 64px;
+  }
+
+  .stats [hidden] {
+    display: none;
+  }
+
+  .stats-login {
+    display: grid;
+    gap: 12px;
+    max-width: 320px;
+    margin-top: 32px;
+  }
+
+  .stats-login input {
+    padding: 10px 14px;
+    border: 1px solid var(--color-mist);
+    border-radius: 8px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  .stats-error {
+    color: #b42318;
+    min-height: 1.5em;
+  }
+
+  .stats-total {
+    margin-top: 24px;
+    font-size: 1.125rem;
+  }
+
+  .stats-total strong {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--color-ink);
+    margin-right: 8px;
+  }
+
+  .stats-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 160px;
+    margin-top: 24px;
+    padding-bottom: 1px;
+    border-bottom: 1px solid var(--color-mist);
+  }
+
+  .stats-chart span {
+    flex: 1;
+    min-height: 2px;
+    background: var(--color-signal-blue);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px;
+    margin-block: 40px;
+  }
+
+  .stats-grid h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+  }
+
+  .stats-grid li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 8px;
+    border-bottom: 1px solid var(--color-mist);
+  }
+
+  .stats-grid li strong {
+    color: var(--color-ink);
+  }
+
+  .stats-empty {
+    color: var(--color-ash);
+  }
+</style>
