@@ -67,6 +67,7 @@ const suggestions = [
   const fallbackError = 'El asistente no respondió. Vuelve a intentarlo en unos segundos.';
 
   let previousQuestion: string | undefined;
+  let previousAnswer: string | undefined;
   let pending = false;
 
   function setPending(isPending: boolean) {
@@ -116,9 +117,11 @@ const suggestions = [
     setPending(true);
     window.goatcounter?.count?.({ path: 'asistente/pregunta', title: 'Pregunta al asistente', event: true });
 
-    const payload: { question: string; previous_question?: string } = { question };
+    const payload: { question: string; previous_question?: string; previous_answer?: string } = { question };
     if (previousQuestion) payload.previous_question = previousQuestion;
+    if (previousQuestion && previousAnswer) payload.previous_answer = previousAnswer;
     previousQuestion = question;
+    previousAnswer = undefined;
 
     let text = fallbackError;
     let failed = true;
@@ -132,6 +135,7 @@ const suggestions = [
         const data = await res.json();
         if (typeof data.answer === 'string' && data.answer.length > 0) {
           text = data.answer;
+          previousAnswer = data.answer;
           failed = false;
         }
       } else {
