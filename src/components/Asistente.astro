@@ -1,0 +1,162 @@
+---
+const apiUrl = (import.meta.env.PUBLIC_ASSISTANT_API_URL ?? '').replace(/\/+$/, '');
+const available = apiUrl.length > 0;
+const suggestions = [
+  '¿Qué hizo en Falabella?',
+  '¿Cómo sería trabajar con él?',
+  '¿Sabe programar en Go?',
+];
+---
+
+<section id="asistente" class="assistant" data-api-url={apiUrl} aria-labelledby="assistantTitle" data-reveal="block" style="--reveal-delay: 0.45s">
+  <div class="assistant-panel">
+    <h2 id="assistantTitle" class="assistant-title">Pregúntale a mi asistente</h2>
+    <p class="assistant-intro">
+      Responde solo con lo que está documentado en mi perfil. Si algo no está, te lo dice.
+    </p>
+
+    <div class="assistant-suggestions">
+      {suggestions.map((question) => (
+        <button type="button" class="btn btn-ghost assistant-suggest" data-question={question} disabled={!available}>
+          {question}
+        </button>
+      ))}
+    </div>
+
+    <div id="assistantLog" class="assistant-log" role="log" aria-live="polite" aria-label="Conversación con el asistente"></div>
+
+    {!available && (
+      <p class="assistant-unavailable">La demo no está disponible por ahora. Vuelve a intentarlo más tarde.</p>
+    )}
+
+    <form id="assistantForm" class="assistant-form" novalidate>
+      <div class="assistant-input">
+        <label for="assistantQuestion" class="field-label">Tu pregunta</label>
+        <input
+          type="text"
+          id="assistantQuestion"
+          name="question"
+          class="field"
+          maxlength="500"
+          placeholder="Escribe una pregunta sobre mi perfil"
+          autocomplete="off"
+          disabled={!available}
+        />
+      </div>
+      <button id="assistantSubmit" type="submit" class="btn btn-cta" disabled={!available}>
+        <span id="assistantSubmitLabel">Preguntar</span>
+      </button>
+    </form>
+  </div>
+</section>
+
+<script>
+  const section = document.getElementById('asistente');
+  const log = document.getElementById('assistantLog');
+  const form = document.getElementById('assistantForm') as HTMLFormElement | null;
+  const input = document.getElementById('assistantQuestion') as HTMLInputElement | null;
+  const submit = document.getElementById('assistantSubmit') as HTMLButtonElement | null;
+  const submitLabel = document.getElementById('assistantSubmitLabel');
+  const suggestions = document.querySelectorAll<HTMLButtonElement>('.assistant-suggest');
+  const apiUrl = section?.dataset.apiUrl ?? '';
+
+  const errorCopy: Record<number, string> = {
+    429: 'Hay demasiadas preguntas seguidas. Espera un momento y vuelve a intentarlo.',
+    400: 'La pregunta debe tener entre 1 y 500 caracteres.',
+  };
+  const fallbackError = 'El asistente no respondió. Vuelve a intentarlo en unos segundos.';
+
+  let previousQuestion: string | undefined;
+  let pending = false;
+
+  function setPending(isPending: boolean) {
+    pending = isPending;
+    if (input) input.disabled = isPending;
+    if (submit) {
+      submit.disabled = isPending;
+      submit.toggleAttribute('aria-busy', isPending);
+    }
+    if (submitLabel) submitLabel.textContent = isPending ? 'Buscando…' : 'Preguntar';
+    suggestions.forEach((button) => (button.disabled = isPending));
+    if (!isPending) input?.focus({ preventScroll: true });
+  }
+
+  function addMessage(role: 'user' | 'assistant', text: string, modifier = '') {
+    if (!log) return null;
+    const message = document.createElement('div');
+    message.className = `assistant-message is-${role} ${modifier}`.trim();
+    const author = document.createElement('span');
+    author.className = 'assistant-author';
+    author.textContent = role === 'user' ? 'Tú' : 'Asistente';
+    const body = document.createElement('p');
+    body.className = 'assistant-text';
+    body.textContent = text;
+    message.append(author, body);
+    log.append(message);
+    log.scrollTop = log.scrollHeight;
+    return body;
+  }
+
+  function createDots() {
+    const dots = document.createElement('span');
+    dots.className = 'assistant-dots';
+    dots.setAttribute('aria-hidden', 'true');
+    dots.append(document.createElement('i'), document.createElement('i'), document.createElement('i'));
+    return dots;
+  }
+
+  async function ask(rawQuestion: string) {
+    const question = rawQuestion.trim();
+    if (!question || pending || !apiUrl) return;
+
+    addMessage('user', question);
+    const answerEl = addMessage('assistant', 'Buscando en el perfil…', 'is-pending');
+    const messageEl = answerEl?.parentElement;
+    answerEl?.append(createDots());
+    setPending(true);
+    window.goatcounter?.count?.({ path: 'asistente/pregunta', title: 'Pregunta al asistente', event: true });
+
+    const payload: { question: string; previous_question?: string } = { question };
+    if (previousQuestion) payload.previous_question = previousQuestion;
+    previousQuestion = question;
+
+    let text = fallbackError;
+    let failed = true;
+    try {
+      const res = await fetch(`${apiUrl}/ask`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof data.answer === 'string' && data.answer.length > 0) {
+          text = data.answer;
+          failed = false;
+        }
+      } else {
+        text = errorCopy[res.status] ?? fallbackError;
+      }
+    } catch {
+      text = fallbackError;
+    }
+
+    if (answerEl) answerEl.textContent = text;
+    messageEl?.classList.remove('is-pending');
+    messageEl?.classList.toggle('is-error', failed);
+    if (log) log.scrollTop = log.scrollHeight;
+    setPending(false);
+  }
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const value = input?.value ?? '';
+    if (!value.trim()) return;
+    if (input) input.value = '';
+    ask(value);
+  });
+
+  suggestions.forEach((button) =>
+    button.addEventListener('click', () => ask(button.dataset.question ?? '')),
+  );
+</script>

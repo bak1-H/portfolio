@@ -2,12 +2,25 @@
 import { Picture, getImage } from 'astro:assets';
 import Arrow from './Arrow.astro';
 import Words from './Words.astro';
+import careerAgent from '../assets/img/career-agent.png';
 import botproyecto from '../assets/img/botproyecto.png';
 import zenly from '../assets/img/image.png';
 import activos from '../assets/img/activos.jpg';
 import dannytortas from '../assets/img/dannytortas.jpg';
 
 const projectData = [
+  {
+    title: 'Asistente de carrera',
+    tech: 'Python · LangGraph · Gemini',
+    image: careerAgent,
+    position: 'top',
+    desc: 'Asistente que responde preguntas sobre mi perfil profesional usando solo mis propios documentos. Busca con un recuperador híbrido (palabras clave y búsqueda semántica en MongoDB Atlas), comprueba si la evidencia contiene realmente el dato pedido y, si no es así, reformula la búsqueda una vez antes de responder (Corrective RAG). Se mide con sus propias evaluaciones: 12 de 12 respuestas correctas. Está desplegado como API HTTP en Railway, con límite de peticiones.',
+    stack: ['Python', 'LangGraph', 'LangChain', 'Gemini', 'MongoDB Atlas', 'Starlette', 'Docker', 'Railway'],
+    links: [
+      { label: 'Probar asistente', url: '#asistente', type: 'demo' },
+      { label: 'GitHub', url: 'https://github.com/bak1-H/career-agent', type: 'github' },
+    ],
+  },
   {
     title: 'Control de Activos',
     tech: 'React · NestJS · PostgreSQL',
@@ -218,8 +231,15 @@ const proyectos = await Promise.all(
         JSON.parse(d.links).forEach((lnk, idx) => {
           const a = document.createElement('a');
           a.href = lnk.url;
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
+          if (lnk.url.startsWith('#')) {
+            a.addEventListener('click', (event) => {
+              event.preventDefault();
+              goToAnchor(lnk.url);
+            });
+          } else {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+          }
           a.className = idx === 0 ? 'btn btn-cta' : 'btn btn-ghost';
           a.innerHTML = lnk.type === 'github' ? GITHUB + lnk.label : lnk.label + ARROW;
           links.appendChild(a);
@@ -252,6 +272,15 @@ const proyectos = await Promise.all(
         document.body.style.overflow = '';
         isClosing = false;
         if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+      }
+
+      async function goToAnchor(hash) {
+        await close();
+        const target = document.querySelector(hash);
+        if (!target) return;
+        target.scrollIntoView();
+        const field = target.querySelector('input:not([disabled])');
+        if (field) field.focus({ preventScroll: true });
       }
 
       document.querySelectorAll('[data-project]').forEach((el) => {

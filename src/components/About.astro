@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import Arrow from './Arrow.astro';
 import Words from './Words.astro';
+import Asistente from './Asistente.astro';
 import hero from '../assets/img/illustrations/hero.png';
 
 const technologies = [
@@ -37,8 +38,8 @@ const technologies = [
     />
   </div>
 
-  <div class="wrap hero-inner on-dark">
-    <div class="hero-card">
+  <div class="wrap hero-inner">
+    <div class="hero-card on-dark">
       <div class="hero-identity" data-reveal="block">
         <span>bak1-h</span>
         <span><span class="status-dot"></span>Disponible para trabajar</span>
@@ -84,6 +85,8 @@ const technologies = [
         </a>
       </div>
     </div>
+
+    <Asistente />
   </div>
 </section>
 
