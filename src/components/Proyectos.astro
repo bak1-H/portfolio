@@ -14,6 +14,7 @@ const projectData = [
     tech: 'Python · LangGraph · Gemini',
     image: careerAgent,
     position: 'top',
+    video: '/videos/career-agent.mp4',
     desc: 'Asistente que responde preguntas sobre mi perfil profesional usando solo mis propios documentos. Busca con un recuperador híbrido (palabras clave y búsqueda semántica en MongoDB Atlas), comprueba si la evidencia contiene realmente el dato pedido y, si no es así, reformula la búsqueda una vez antes de responder (Corrective RAG). Se mide con sus propias evaluaciones: 12 de 12 respuestas correctas. Está desplegado como API HTTP en Railway, con límite de peticiones.',
     stack: ['Python', 'LangGraph', 'LangChain', 'Gemini', 'MongoDB Atlas', 'Starlette', 'Docker', 'Railway'],
     links: [
@@ -276,6 +277,10 @@ const proyectos = await Promise.all(
 
       async function goToAnchor(hash) {
         await close();
+        if (hash === '#asistente') {
+          document.dispatchEvent(new CustomEvent('assistant:open'));
+          return;
+        }
         const target = document.querySelector(hash);
         if (!target) return;
         target.scrollIntoView();

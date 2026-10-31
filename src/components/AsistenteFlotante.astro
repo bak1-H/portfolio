@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import cat from '../assets/img/assistant-cat.png';
+
 const apiUrl = (import.meta.env.PUBLIC_ASSISTANT_API_URL ?? '').replace(/\/+$/, '');
 const available = apiUrl.length > 0;
 const suggestions = [
@@ -8,22 +11,41 @@ const suggestions = [
 ];
 ---
 
-<section id="asistente" class="assistant" data-api-url={apiUrl} aria-labelledby="assistantTitle" data-reveal="block" style="--reveal-delay: 0.45s">
-  <div class="assistant-panel">
-    <h2 id="assistantTitle" class="assistant-title">Pregúntale a mi asistente</h2>
-    <p class="assistant-intro">
-      Responde solo con lo que está documentado en mi perfil. Si algo no está, te lo dice.
-    </p>
-
-    <div class="assistant-suggestions">
-      {suggestions.map((question) => (
-        <button type="button" class="btn btn-ghost assistant-suggest" data-question={question} disabled={!available}>
-          {question}
+<div id="assistantWidget" class="chat-widget" data-api-url={apiUrl}>
+  <div
+    id="assistantDialog"
+    class="chat-panel"
+    role="dialog"
+    aria-label="Chat con el asistente de Maximiliano"
+    tabindex="-1"
+  >
+    <div class="chat-header">
+      <div>
+        <h2 class="chat-title">Asistente de Maximiliano</h2>
+        <p class="chat-subtitle">Responde solo con lo documentado en su perfil.</p>
+      </div>
+      <div class="chat-actions">
+        <button id="assistantExpand" type="button" class="chat-close" aria-label="Expandir el chat" aria-pressed="false">
+          <svg class="icon-expand" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 4h5v5M9 20H4v-5M20 4l-6 6M4 20l6-6"/></svg>
+          <svg class="icon-collapse" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h5M14 10V5M10 14H5M10 14v5M14 10l6-6M10 14l-6 6"/></svg>
         </button>
-      ))}
+        <button id="assistantClose" type="button" class="chat-close" aria-label="Cerrar el chat">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
     </div>
 
     <div id="assistantLog" class="assistant-log" role="log" aria-live="polite" aria-label="Conversación con el asistente"></div>
+
+    {available && (
+      <div class="chat-suggestions">
+        {suggestions.map((question) => (
+          <button type="button" class="btn btn-ghost chat-suggest" data-assistant-ask={question}>
+            {question}
+          </button>
+        ))}
+      </div>
+    )}
 
     {!available && (
       <p class="assistant-unavailable">La demo no está disponible por ahora. Vuelve a intentarlo más tarde.</p>
@@ -48,17 +70,34 @@ const suggestions = [
       </button>
     </form>
   </div>
-</section>
+
+  <span id="assistantHint" class="chat-hint" aria-hidden="true">Pregúntame sobre Maximiliano</span>
+
+  <button
+    id="assistantLauncher"
+    type="button"
+    class="chat-launcher"
+    aria-label="Abrir el chat con mi asistente"
+    aria-expanded="false"
+    aria-controls="assistantDialog"
+  >
+    <Image src={cat} alt="" width={80} height={80} densities={[1, 2]} format="webp" loading="lazy" decoding="async" />
+  </button>
+</div>
 
 <script>
-  const section = document.getElementById('asistente');
+  const widget = document.getElementById('assistantWidget');
+  const dialog = document.getElementById('assistantDialog');
+  const launcher = document.getElementById('assistantLauncher');
+  const closeButton = document.getElementById('assistantClose');
+  const expandButton = document.getElementById('assistantExpand');
+  const hint = document.getElementById('assistantHint');
   const log = document.getElementById('assistantLog');
   const form = document.getElementById('assistantForm') as HTMLFormElement | null;
   const input = document.getElementById('assistantQuestion') as HTMLInputElement | null;
   const submit = document.getElementById('assistantSubmit') as HTMLButtonElement | null;
   const submitLabel = document.getElementById('assistantSubmitLabel');
-  const suggestions = document.querySelectorAll<HTMLButtonElement>('.assistant-suggest');
-  const apiUrl = section?.dataset.apiUrl ?? '';
+  const apiUrl = widget?.dataset.apiUrl ?? '';
 
   const errorCopy: Record<number, string> = {
     429: 'Hay demasiadas preguntas seguidas. Espera un momento y vuelve a intentarlo.',
@@ -66,10 +105,54 @@ const suggestions = [
     503: 'El asistente alcanzó su límite de uso por ahora. Vuelve a intentarlo más tarde o escríbeme por el formulario de contacto.',
   };
   const fallbackError = 'El asistente no respondió. Vuelve a intentarlo en unos segundos.';
+  const hintKey = 'assistantHintDismissed';
 
   let previousQuestion: string | undefined;
   let previousAnswer: string | undefined;
   let pending = false;
+  let isOpen = false;
+
+  function askButtons() {
+    return document.querySelectorAll<HTMLButtonElement>('[data-assistant-ask]');
+  }
+
+  function hintDismissed() {
+    try {
+      return sessionStorage.getItem(hintKey) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  function dismissHint() {
+    hint?.classList.remove('is-visible');
+    try {
+      sessionStorage.setItem(hintKey, '1');
+    } catch {}
+  }
+
+  function setOpen(next: boolean) {
+    if (!dialog || !launcher || isOpen === next) return;
+    isOpen = next;
+    dialog.classList.toggle('is-open', next);
+    widget?.classList.toggle('is-open', next);
+    launcher.setAttribute('aria-expanded', String(next));
+    launcher.setAttribute('aria-label', next ? 'Cerrar el chat' : 'Abrir el chat con mi asistente');
+    if (next) {
+      dismissHint();
+      if (input && !input.disabled) input.focus({ preventScroll: true });
+      else dialog.focus({ preventScroll: true });
+    } else {
+      launcher.focus({ preventScroll: true });
+    }
+  }
+
+  function setExpanded(next: boolean) {
+    widget?.classList.toggle('is-expanded', next);
+    expandButton?.setAttribute('aria-pressed', String(next));
+    expandButton?.setAttribute('aria-label', next ? 'Reducir el chat' : 'Expandir el chat');
+    if (log) log.scrollTop = log.scrollHeight;
+  }
 
   function setPending(isPending: boolean) {
     pending = isPending;
@@ -79,8 +162,8 @@ const suggestions = [
       submit.toggleAttribute('aria-busy', isPending);
     }
     if (submitLabel) submitLabel.textContent = isPending ? 'Buscando…' : 'Preguntar';
-    suggestions.forEach((button) => (button.disabled = isPending));
-    if (!isPending) input?.focus({ preventScroll: true });
+    askButtons().forEach((button) => (button.disabled = isPending));
+    if (!isPending && isOpen) input?.focus({ preventScroll: true });
   }
 
   function addMessage(role: 'user' | 'assistant', text: string, modifier = '') {
@@ -153,6 +236,29 @@ const suggestions = [
     setPending(false);
   }
 
+  launcher?.addEventListener('click', () => setOpen(!isOpen));
+  closeButton?.addEventListener('click', () => setOpen(false));
+  expandButton?.addEventListener('click', () => setExpanded(!widget?.classList.contains('is-expanded')));
+  document.addEventListener('assistant:open', () => setOpen(true));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isOpen) setOpen(false);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (event.defaultPrevented || !(event.target instanceof Element)) return;
+    const askTrigger = event.target.closest<HTMLElement>('[data-assistant-ask]');
+    if (askTrigger) {
+      setOpen(true);
+      ask(askTrigger.dataset.assistantAsk ?? '');
+      return;
+    }
+    if (event.target.closest('[data-assistant-open], a[href="#asistente"]')) {
+      event.preventDefault();
+      setOpen(true);
+    }
+  });
+
   form?.addEventListener('submit', (event) => {
     event.preventDefault();
     const value = input?.value ?? '';
@@ -161,7 +267,9 @@ const suggestions = [
     ask(value);
   });
 
-  suggestions.forEach((button) =>
-    button.addEventListener('click', () => ask(button.dataset.question ?? '')),
-  );
+  if (!hintDismissed()) {
+    window.setTimeout(() => {
+      if (!isOpen && !hintDismissed()) hint?.classList.add('is-visible');
+    }, 2500);
+  }
 </script>
