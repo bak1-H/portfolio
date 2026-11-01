@@ -1284,6 +1284,11 @@ body {
   display: none;
 }
 
+.chat-followups {
+  margin-top: 10px;
+  padding-inline: 0;
+}
+
 .chat-suggest {
   padding: 7px 14px;
   font-size: 13px;

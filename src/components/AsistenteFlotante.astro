@@ -108,8 +108,8 @@ const suggestions = [
   const fallbackError = 'El asistente no respondió. Vuelve a intentarlo en unos segundos.';
   const hintKey = 'assistantHintDismissed';
 
-  let previousQuestion: string | undefined;
-  let previousAnswer: string | undefined;
+  const historyLimit = 3;
+  const history: { question: string; answer: string }[] = [];
   let pending = false;
   let isOpen = false;
 
@@ -183,6 +183,27 @@ const suggestions = [
     return body;
   }
 
+  function clearFollowUps() {
+    log?.querySelectorAll('.chat-followups').forEach((container) => container.remove());
+  }
+
+  function renderFollowUps(messageEl: Element | null | undefined, suggestions: unknown) {
+    if (!messageEl || !Array.isArray(suggestions)) return;
+    const questions = suggestions.filter((item): item is string => typeof item === 'string' && item.trim().length > 0).slice(0, 2);
+    if (questions.length === 0) return;
+    const container = document.createElement('div');
+    container.className = 'chat-suggestions chat-followups';
+    questions.forEach((question) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn btn-ghost chat-suggest';
+      button.dataset.assistantAsk = question;
+      button.textContent = question;
+      container.append(button);
+    });
+    messageEl.append(container);
+  }
+
   function createDots() {
     const dots = document.createElement('span');
     dots.className = 'assistant-dots';
@@ -195,6 +216,7 @@ const suggestions = [
     const question = rawQuestion.trim();
     if (!question || pending || !apiUrl) return;
 
+    clearFollowUps();
     addMessage('user', question);
     const answerEl = addMessage('assistant', 'Buscando en el perfil…', 'is-pending');
     const messageEl = answerEl?.parentElement;
@@ -202,14 +224,12 @@ const suggestions = [
     setPending(true);
     window.goatcounter?.count?.({ path: 'asistente/pregunta', title: 'Pregunta al asistente', event: true });
 
-    const payload: { question: string; previous_question?: string; previous_answer?: string } = { question };
-    if (previousQuestion) payload.previous_question = previousQuestion;
-    if (previousQuestion && previousAnswer) payload.previous_answer = previousAnswer;
-    previousQuestion = question;
-    previousAnswer = undefined;
+    const payload: { question: string; history?: { question: string; answer: string }[] } = { question };
+    if (history.length > 0) payload.history = history.slice(-historyLimit);
 
     let text = fallbackError;
     let failed = true;
+    let suggestions: unknown = [];
     try {
       const res = await fetch(`${apiUrl}/ask`, {
         method: 'POST',
@@ -220,7 +240,8 @@ const suggestions = [
         const data = await res.json();
         if (typeof data.answer === 'string' && data.answer.length > 0) {
           text = data.answer;
-          previousAnswer = data.answer;
+          suggestions = data.suggestions;
+          history.push({ question, answer: data.answer.slice(0, 4000) });
           failed = false;
         }
       } else {
@@ -233,6 +254,7 @@ const suggestions = [
     if (answerEl) answerEl.textContent = text;
     messageEl?.classList.remove('is-pending');
     messageEl?.classList.toggle('is-error', failed);
+    if (!failed) renderFollowUps(messageEl, suggestions);
     if (log) log.scrollTop = log.scrollHeight;
     setPending(false);
   }
