@@ -28,8 +28,8 @@ const projectData = [
     image: activos,
     position: 'center',
     video: '/videos/control-activos.mp4',
-    desc: 'Plataforma web para saber dónde está cada equipo de una operación, quién lo tiene y en qué estado. Incluye asignación con escaneo, traslados entre bodegas, recuento cíclico, alertas por Teams y nueve roles con permisos. Desarrollado para Falabella; por eso no tiene repositorio ni despliegue públicos.',
-    stack: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'TypeORM', 'BFF'],
+    desc: 'Plataforma web para saber dónde está cada equipo de una operación, quién lo tiene y en qué estado. Incluye asignación con escaneo, traslados entre bodegas, recuento cíclico, alertas por Teams y nueve roles con permisos. El frontend es una SPA en React con rutas protegidas: es una herramienta interna detrás de un login, con mucho estado y navegación constante entre pantallas, donde el SEO no importa y conviene no recargar la página en cada paso. Consume un BFF que agrega los datos de la API en NestJS. Desarrollado para Falabella; por eso no tiene repositorio ni despliegue públicos.',
+    stack: ['React', 'TypeScript', 'SPA', 'React Router', 'NestJS', 'PostgreSQL', 'TypeORM', 'BFF'],
     links: [],
   },
   {
@@ -51,8 +51,8 @@ const projectData = [
     image: dannytortas,
     position: 'top',
     video: '/videos/danny-tortas.mp4',
-    desc: 'Landing page para una pastelería artesanal, con catálogo de especialidades y pedidos directos por WhatsApp.',
-    stack: ['Astro 5', 'Tailwind CSS'],
+    desc: 'Sitio para una pastelería artesanal, con catálogo de especialidades y pedidos directos por WhatsApp. No es una SPA: es un sitio multipágina con HTML pregenerado en el build, porque es contenido público que necesita buen SEO y cargar rápido en el celular. Solo la galería es una server island que trae las últimas publicaciones de Instagram en cada visita, así que se actualiza sin volver a desplegar.',
+    stack: ['Astro 5', 'Tailwind CSS', 'SSG', 'Server Islands', 'Instagram Graph API', 'Netlify'],
     links: [{ label: 'Ver sitio', url: 'https://dannytortas.cl', type: 'demo' }],
   },
   {
