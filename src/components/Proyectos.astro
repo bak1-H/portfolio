@@ -10,15 +10,15 @@ import dannytortas from '../assets/img/dannytortas.jpg';
 
 const projectData = [
   {
-    title: 'Asistente de carrera',
+    title: 'KatIA · asistente de carrera',
     tech: 'Python · LangGraph · Gemini',
     image: careerAgent,
     position: 'top',
     video: '/videos/career-agent.mp4',
-    desc: 'Asistente que responde preguntas sobre mi perfil profesional usando solo mis propios documentos. Busca con un recuperador híbrido (palabras clave y búsqueda semántica en MongoDB Atlas), comprueba si la evidencia contiene realmente el dato pedido y, si no es así, reformula la búsqueda una vez antes de responder (Corrective RAG). Se mide con sus propias evaluaciones: 12 de 12 respuestas correctas. Está desplegado como API HTTP en Railway, con límite de peticiones.',
-    stack: ['Python', 'LangGraph', 'LangChain', 'Gemini', 'MongoDB Atlas', 'Starlette', 'Docker', 'Railway'],
+    desc: 'KatIA responde preguntas sobre mi perfil profesional usando solo mis propios documentos. Busca con un recuperador híbrido (palabras clave y búsqueda semántica en MongoDB Atlas) y responde con una sola llamada al modelo; solo reescribe la pregunta cuando depende de la conversación. Medí el tiempo de cada paso en producción y quité el evaluador de evidencia de Corrective RAG: ocupaba hasta la mitad de cada respuesta y las evaluaciones dieron lo mismo con y sin él. Cada push corre las pruebas en GitHub Actions y Railway indexa y despliega el API.',
+    stack: ['Python', 'LangGraph', 'LangChain', 'Gemini', 'MongoDB Atlas', 'Starlette', 'Docker', 'Railway', 'GitHub Actions'],
     links: [
-      { label: 'Probar asistente', url: '#asistente', type: 'demo' },
+      { label: 'Probar KatIA', url: '#asistente', type: 'demo' },
       { label: 'GitHub', url: 'https://github.com/bak1-H/career-agent', type: 'github' },
     ],
   },
